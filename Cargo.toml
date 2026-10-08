@@ -22,6 +22,10 @@ members = ["bench", "test", "szip"]
 [lib]
 bench = false
 
+[features]
+default = ["std"]
+std = []
+
 [profile.release]
 debug = true
 

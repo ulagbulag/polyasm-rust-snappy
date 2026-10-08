@@ -1,4 +1,6 @@
-use std::convert::TryInto;
+use core::convert::TryInto;
+
+#[cfg(feature = "std")]
 use std::io;
 
 /// Read a u16 in little endian format from the beginning of the given slice.
@@ -10,6 +12,7 @@ pub fn read_u16_le(slice: &[u8]) -> u16 {
 /// Read a u24 (returned as a u32 with the most significant 8 bits always set
 /// to 0) in little endian format from the beginning of the given slice. This
 /// panics if the slice has length less than 3.
+#[cfg(feature = "std")]
 pub fn read_u24_le(slice: &[u8]) -> u32 {
     slice[0] as u32 | (slice[1] as u32) << 8 | (slice[2] as u32) << 16
 }
@@ -22,6 +25,7 @@ pub fn read_u32_le(slice: &[u8]) -> u32 {
 
 /// Like read_u32_le, but from an io::Read implementation. If io::Read does
 /// not yield at least 4 bytes, then this returns an unexpected EOF error.
+#[cfg(feature = "std")]
 pub fn io_read_u32_le<R: io::Read>(mut rdr: R) -> io::Result<u32> {
     let mut buf = [0; 4];
     rdr.read_exact(&mut buf)?;
@@ -40,6 +44,7 @@ pub fn write_u16_le(n: u16, slice: &mut [u8]) {
 /// Write a u24 (given as a u32 where the most significant 8 bits are ignored)
 /// in little endian format to the beginning of the given slice. This panics
 /// if the slice has length less than 3.
+#[cfg(feature = "std")]
 pub fn write_u24_le(n: u32, slice: &mut [u8]) {
     slice[0] = n as u8;
     slice[1] = (n >> 8) as u8;
@@ -48,6 +53,7 @@ pub fn write_u24_le(n: u32, slice: &mut [u8]) {
 
 /// Write a u32 in little endian format to the beginning of the given slice.
 /// This panics if the slice has length less than 4.
+#[cfg(feature = "std")]
 pub fn write_u32_le(n: u32, slice: &mut [u8]) {
     assert!(slice.len() >= 4);
     let bytes = n.to_le_bytes();

@@ -1,6 +1,9 @@
-use std::fmt;
-use std::ops::{Deref, DerefMut};
-use std::ptr;
+use alloc::{vec, vec::Vec};
+use core::{
+    fmt,
+    ops::{Deref, DerefMut},
+    ptr,
+};
 
 use crate::bytes;
 use crate::error::{Error, Result};

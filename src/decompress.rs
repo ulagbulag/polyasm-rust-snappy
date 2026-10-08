@@ -1,4 +1,5 @@
-use std::ptr;
+use alloc::{vec, vec::Vec};
+use core::ptr;
 
 use crate::bytes;
 use crate::error::{Error, Result};

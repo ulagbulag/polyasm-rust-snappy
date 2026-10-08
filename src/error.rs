@@ -1,6 +1,7 @@
-use std::fmt;
+use alloc::{string::String, vec::Vec};
+use core::{fmt, result};
+#[cfg(feature = "std")]
 use std::io;
-use std::result;
 
 /// A convenient type alias for `Result<T, snap::Error>`.
 pub type Result<T> = result::Result<T, Error>;
@@ -12,11 +13,13 @@ pub type Result<T> = result::Result<T, Error>;
 /// error that occurred.
 ///
 /// The type parameter `W` is the unconsumed writer.
+#[cfg(feature = "std")]
 pub struct IntoInnerError<W> {
     wtr: W,
     err: io::Error,
 }
 
+#[cfg(feature = "std")]
 impl<W> IntoInnerError<W> {
     pub(crate) fn new(wtr: W, err: io::Error) -> IntoInnerError<W> {
         IntoInnerError { wtr, err }
@@ -45,14 +48,17 @@ impl<W> IntoInnerError<W> {
     }
 }
 
+#[cfg(feature = "std")]
 impl<W: std::any::Any> std::error::Error for IntoInnerError<W> {}
 
+#[cfg(feature = "std")]
 impl<W> fmt::Display for IntoInnerError<W> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.err.fmt(f)
     }
 }
 
+#[cfg(feature = "std")]
 impl<W> fmt::Debug for IntoInnerError<W> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.err.fmt(f)
@@ -179,6 +185,7 @@ pub enum Error {
     },
 }
 
+#[cfg(feature = "std")]
 impl From<Error> for io::Error {
     fn from(err: Error) -> io::Error {
         io::Error::new(io::ErrorKind::Other, err)
@@ -244,7 +251,7 @@ impl PartialEq for Error {
     }
 }
 
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -335,6 +342,6 @@ impl fmt::Display for Error {
 }
 
 fn escape(bytes: &[u8]) -> String {
-    use std::ascii::escape_default;
+    use core::ascii::escape_default;
     bytes.iter().flat_map(|&b| escape_default(b)).map(|b| b as char).collect()
 }

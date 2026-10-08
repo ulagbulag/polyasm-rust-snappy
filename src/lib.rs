@@ -83,6 +83,9 @@ fn main() {
 */
 
 #![deny(missing_docs)]
+#![cfg_attr(not(feature = "std"), no_std)]
+
+extern crate alloc;
 
 #[cfg(test)]
 doc_comment::doctest!("../README.md");
@@ -90,7 +93,7 @@ doc_comment::doctest!("../README.md");
 pub use crate::error::{Error, Result};
 
 /// We don't permit compressing a block bigger than what can fit in a u32.
-const MAX_INPUT_SIZE: u64 = std::u32::MAX as u64;
+const MAX_INPUT_SIZE: u64 = core::u32::MAX as u64;
 
 /// The maximum number of bytes that we process at once. A block is the unit
 /// at which we scan for candidates for compression.
@@ -98,12 +101,17 @@ const MAX_BLOCK_SIZE: usize = 1 << 16;
 
 mod bytes;
 mod compress;
+#[cfg(feature = "std")]
 mod crc32;
+#[cfg(feature = "std")]
 mod crc32_table;
 mod decompress;
 mod error;
+#[cfg(feature = "std")]
 mod frame;
 pub mod raw;
+#[cfg(feature = "std")]
 pub mod read;
 mod tag;
+#[cfg(feature = "std")]
 pub mod write;
